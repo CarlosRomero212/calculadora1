@@ -1,9 +1,33 @@
+<?php
+$resultado = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['calcular'])) {
+    $num1 = isset($_POST['num1']) ? floatval($_POST['num1']) : 0;
+    $num2 = isset($_POST['num2']) ? floatval($_POST['num2']) : 0;
+    $operacion = isset($_POST['operacion']) ? $_POST['operacion'] : '+';
+
+    switch ($operacion) {
+        case '+': $resultado = $num1 + $num2; break;
+        case '-': $resultado = $num1 - $num2; break;
+        case '*': $resultado = $num1 * $num2; break;
+        case '/': 
+            if ($num2 != 0) {
+                $resultado = $num1 / $num2;
+            } else {
+                $resultado = "No se puede dividir por cero.";
+            }
+            break;
+        default:
+            $resultado = "Operación no válida.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.php">
     <title>Calculadora en PHP</title>
     <style>
         body {
@@ -59,6 +83,12 @@
             padding: 10px;
             font-size: 18px;
         }
+        .resultado {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -71,17 +101,23 @@
         <h1>Calculadora en PHP</h1>
         <div class="calculadora">
             <form method="post">
-                <input type="number" name="num1" required>
+                <input type="number" name="num1" step="any" required value="<?= isset($_POST['num1']) ? htmlspecialchars($_POST['num1']) : '' ?>">
                 <select name="operacion">
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                    <option value="*">*</option>
-                    <option value="/">/</option>
+                    <option value="+" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "+") ? 'selected' : '' ?>>+</option>
+                    <option value="-" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "-") ? 'selected' : '' ?>>-</option>
+                    <option value="*" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "*") ? 'selected' : '' ?>>*</option>
+                    <option value="/" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "/") ? 'selected' : '' ?>>/</option>
                 </select>
-                <input type="number" name="num2" required>
+                <input type="number" name="num2" step="any" required value="<?= isset($_POST['num2']) ? htmlspecialchars($_POST['num2']) : '' ?>">
                 <button type="submit" name="calcular">Calcular</button>
             </form>
-          
+            <div class="resultado">
+                <?php
+                    if ($resultado !== "") {
+                        echo "Resultado: " . $resultado;
+                    }
+                ?>
+            </div>
         </div>
     </div>
 </body>
