@@ -1,34 +1,9 @@
-<?php
-$resultado = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['calcular'])) {
-    $num1 = isset($_POST['num1']) ? floatval($_POST['num1']) : 0;
-    $num2 = isset($_POST['num2']) ? floatval($_POST['num2']) : 0;
-    $operacion = isset($_POST['operacion']) ? $_POST['operacion'] : '+';
-
-    switch ($operacion) {
-        case '+': $resultado = $num1 + $num2; break;
-        case '-': $resultado = $num1 - $num2; break;
-        case '*': $resultado = $num1 * $num2; break;
-        case '/': 
-            if ($num2 != 0) {
-                $resultado = $num1 / $num2;
-            } else {
-                $resultado = "No se puede dividir por cero.";
-            }
-            break;
-        default:
-            $resultado = "Operación no válida.";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora en PHP</title>
+    <title>Calculadora en JavaScript</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -98,27 +73,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['calcular'])) {
         </ul>
     </nav>
     <div class="container">
-        <h1>Calculadora en PHP</h1>
+        <h1>Calculadora en JavaScript</h1>
         <div class="calculadora">
-            <form method="post">
-                <input type="number" name="num1" step="any" required value="<?= isset($_POST['num1']) ? htmlspecialchars($_POST['num1']) : '' ?>">
-                <select name="operacion">
-                    <option value="+" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "+") ? 'selected' : '' ?>>+</option>
-                    <option value="-" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "-") ? 'selected' : '' ?>>-</option>
-                    <option value="*" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "*") ? 'selected' : '' ?>>*</option>
-                    <option value="/" <?= (isset($_POST['operacion']) && $_POST['operacion'] == "/") ? 'selected' : '' ?>>/</option>
+            <form id="calculadoraForm">
+                <input type="number" id="num1" required>
+                <select id="operacion">
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                    <option value="*">*</option>
+                    <option value="/">/</option>
                 </select>
-                <input type="number" name="num2" step="any" required value="<?= isset($_POST['num2']) ? htmlspecialchars($_POST['num2']) : '' ?>">
-                <button type="submit" name="calcular">Calcular</button>
+                <input type="number" id="num2" required>
+                <button type="button" onclick="calcular()">Calcular</button>
             </form>
-            <div class="resultado">
-                <?php
-                    if ($resultado !== "") {
-                        echo "Resultado: " . $resultado;
-                    }
-                ?>
-            </div>
+            <div class="resultado" id="resultado"></div>
         </div>
     </div>
+
+    <script>
+        function calcular() {
+            // Obtener los valores de los inputs
+            var num1 = parseFloat(document.getElementById('num1').value);
+            var num2 = parseFloat(document.getElementById('num2').value);
+            var operacion = document.getElementById('operacion').value;
+
+            var resultado = 0;
+            var mensaje = "";
+
+            // Realizar el cálculo según la operación seleccionada
+            switch (operacion) {
+                case '+':
+                    resultado = num1 + num2;
+                    break;
+                case '-':
+                    resultado = num1 - num2;
+                    break;
+                case '*':
+                    resultado = num1 * num2;
+                    break;
+                case '/':
+                    if (num2 != 0) {
+                        resultado = num1 / num2;
+                    } else {
+                        mensaje = "No se puede dividir por cero.";
+                    }
+                    break;
+                default:
+                    mensaje = "Operación no válida.";
+            }
+
+            // Mostrar el resultado en la página
+            if (mensaje) {
+                document.getElementById('resultado').innerHTML = mensaje;
+            } else {
+                document.getElementById('resultado').innerHTML = "Resultado: " + resultado;
+            }
+        }
+    </script>
 </body>
 </html>
